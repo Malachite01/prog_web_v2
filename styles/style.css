@@ -1,0 +1,145 @@
+:root {
+  --global-radius: 10px;
+
+  /* === Color palette === */
+  --body-bg-color: #fcf8f4;
+  --font-color: #cee0e7;
+
+  --btn-bg-1: #c57326;
+  --btn-bg-2: #d6226d;
+
+  --btn-glow-color: rgba(255, 21, 0, 0.6);
+
+  /* Water highlights */
+  --water-light-1: rgba(255, 255, 255, 0.4);
+  --water-light-2: rgba(255, 255, 255, 0.1);
+
+  /* Shine reflection */
+  --shine-color: rgba(255, 255, 255, 0.367);
+}
+
+@font-face {
+  font-family: Daydream;
+  src: url("../font.otf");
+}
+
+body {
+  background-color: var(--body-bg-color);
+
+  background-image: url("/assets/scene/bg.png");
+  background-size:cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+
+#menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#fish-menu {
+  width: 200px;
+  height: auto;
+  transform-origin: center;
+  animation: zoomInOut 1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes zoomInOut {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.game-title {
+  font-family: Daydream;
+  font-size: 3rem;
+  text-align: center;
+  color: var(--font-color);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.597);
+}
+
+/* --- Button Base --- */
+.primary-btn {
+  font-family: Daydream;
+  font-size: 1.2rem;
+  border-radius: var(--global-radius);
+  border: none;
+  padding: 12px 28px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(135deg, var(--btn-bg-1), var(--btn-bg-2));
+  color: var(--font-color);
+
+  box-shadow: 0 0 15px var(--btn-glow-color);
+  transition: 0.3s ease;
+}
+
+/* --- Water ripple layer --- */
+.primary-btn.water-btn::before {
+  content: "";
+  position: absolute;
+  top: -150%;
+  left: -50%;
+  width: 200%;
+  height: 300%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--water-light-1),
+    var(--water-light-2) 40%,
+    transparent 60%
+  );
+  animation: waterFlow 6s infinite linear;
+}
+
+/* --- Shine reflection layer --- */
+.primary-btn.water-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    var(--shine-color) 50%,
+    transparent 100%
+  );
+  animation: shine 3s infinite ease-in-out;
+}
+
+/* --- Hover effect --- */
+.primary-btn.water-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 20px var(--btn-glow-color);
+}
+
+/* --- Animations --- */
+@keyframes waterFlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
