@@ -27,9 +27,10 @@
 </head>
 
 <body>
-  <!-- Musique menu -->
-  <audio id="background-audio" src="./assets/sounds/relaxing-guitar-loop.mp3" loop autoplay></audio>
-  
+  <!-- Musique -->
+  <audio id="background-audio" src="./assets/sounds/music.mp3" loop autoplay muted></audio>
+  <script src="./js/audio.js"></script>
+    
   <!-- Effet visuel avec les bulles -->
   <div id="bubble-container"></div>
 
@@ -40,8 +41,17 @@
   <!-- Bouton de son -->
   <button onclick="toggleSound()" class="primary-btn water-btn sound-btn" id="sound-btn"><img src="./assets/images/soundon.svg" alt="logo son" id="logo-son"></button>
 
+  <!-- Bateau ennemi -->
+  <img src="./assets/enemy/boat.gif" alt="Enemy boat" id="boat-enemy">
+
+  <!-- Ecran de jeu -->
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Image du joueur (cachée, utilisée dans le JS game_manager.js) -->
+  <img src="./assets/character/fish.gif" id="fish-player" style="display:none;">
+  
   <!-- Import des scripts JS -->
-  <script src="./js/script.js"></script>
+  <script src="./js/game_manager.js"></script>
   <script src="./js/bubbles_game.js"></script>
 </body>
 </html>

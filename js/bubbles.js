@@ -21,7 +21,12 @@ function createBubble() {
   bubble.addEventListener("animationend", () => bubble.remove());
 }
 
-// Générer beaucoup de bulles au chargement de la page
+// Générer moins de bulles au début
 for (let i = 0; i < 50; i++) {
-  setTimeout(createBubble, i * 100); // Espacer la création des bulles
+  setTimeout(createBubble, i * 200);
 }
+
+// Génération infinie toutes les 300–700ms
+setInterval(() => {
+  createBubble();
+}, Math.random() * 400 + 300);
