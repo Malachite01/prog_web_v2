@@ -36,20 +36,14 @@ body {
   margin: 0;
 }
 
+/*!   __________ */
+/*!  |___MENU__| */
 
 #menu-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-#fish-menu {
-  width: 200px;
-  height: auto;
-  transform-origin: center;
-  animation: zoomInOut 1s ease-in-out infinite;
-  pointer-events: none;
 }
 
 @keyframes zoomInOut {
@@ -62,6 +56,14 @@ body {
   100% {
     transform: scale(1);
   }
+}
+
+#fish-menu {
+  width: 200px;
+  height: auto;
+  transform-origin: center;
+  animation: zoomInOut 1s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .game-title {
@@ -87,6 +89,17 @@ body {
 
   box-shadow: 0 0 15px var(--btn-glow-color);
   transition: 0.3s ease;
+}
+
+@keyframes waterFlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
 }
 
 .primary-btn.water-btn::before {
@@ -124,17 +137,44 @@ body {
   box-shadow: 0 0 20px var(--btn-glow-color);
 }
 
-@keyframes waterFlow {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.primary-btn.water-btn.sound-btn {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 5px;
 }
 
-@keyframes shine {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
+.primary-btn.water-btn.home-btn {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 5px;
 }
 
+#logo-son {
+  filter: invert(1);
+  width: 30px;
+}
+
+#logo-home {
+  filter: invert(1);
+  width: 30px;
+}
+
+#copyright {
+  position: absolute;
+  bottom: 0;
+  font-family: Daydream;
+  font-size: .6rem;
+  color: var(--font-color);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.597);
+}
+
+/* Effets de bulles d'eau */
 #bubble-container {
   position: fixed;
   top: 0;
@@ -145,7 +185,6 @@ body {
   overflow: hidden;
   z-index: 0;
 }
-
 .bubble {
   position: absolute;
   bottom: -50px;
@@ -154,7 +193,6 @@ body {
   opacity: 0;
   animation: rise 5s linear forwards;
 }
-
 @keyframes rise {
   0% {
     transform: translateY(0) scale(0.5);
@@ -167,4 +205,40 @@ body {
     transform: translateY(-120vh) scale(1);
     opacity: 0;
   }
+}
+
+.smallbubble {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  background-color: rgba(173, 216, 230, 0.7);
+  opacity: 0;
+  animation: smallrise 5s linear forwards;
+}
+
+@keyframes smallrise {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50vh) scale(1);
+    opacity: 0;
+  }
+}
+
+
+/*!   __________ */
+/*!  |___JEU___| */
+
+#timer {
+  font-family: Daydream;
+  font-size: 1.5rem;
+  color: var(--font-color);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.597);
+  position: absolute;
+  top: 0px;
 }
