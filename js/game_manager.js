@@ -1,8 +1,19 @@
+// Zone de jeu
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
+//Joueur
 const boostSprite = document.getElementById("fish-player");
 const playerSprite = document.getElementById("poisson-other");
 const bubbles = [];
+//Ennemy
+const netSprite = new Image();
+netSprite.src = './assets/enemy/net.webp';
+// Tableau pour stocker les filets actifs
+let nets = [];
+// Timer pour spawner les filets régulièrement
+let netSpawnTimer = 0;
+const netSpawnInterval = 120; // Spawner un filet toutes les 120 frames (2 secondes à 60fps)
+
 
 //! Fonction pour redimensionner le canvas en fonction de la taille de la fenêtre
 function resizeCanvas() {
@@ -51,16 +62,16 @@ playerScript.onload = () => {
   document.addEventListener("keydown", e => {
     switch(e.key) {
       case "ArrowLeft":
-        player.setControl('left', true);
+        player.setControl('backward', true);
         break;
       case "ArrowRight":
-        player.setControl('right', true);
-        break;
-      case "ArrowUp":
         player.setControl('forward', true);
         break;
+      case "ArrowUp":
+        player.setControl('left', true);
+        break;
       case "ArrowDown":
-        player.setControl('backward', true);
+        player.setControl('right', true);
         break;
       case "Shift":
         player.setControl('boost', true);
@@ -71,16 +82,16 @@ playerScript.onload = () => {
   document.addEventListener("keyup", e => {
     switch(e.key) {
       case "ArrowLeft":
-        player.setControl('left', false);
+        player.setControl('backward', false);
         break;
       case "ArrowRight":
-        player.setControl('right', false);
-        break;
-      case "ArrowUp":
         player.setControl('forward', false);
         break;
+      case "ArrowUp":
+        player.setControl('left', false);
+        break;
       case "ArrowDown":
-        player.setControl('backward', false);
+        player.setControl('right', false);
         break;
       case "Shift":
         player.setControl('boost', false);
@@ -88,7 +99,11 @@ playerScript.onload = () => {
     }
   });
 
-  // Boucle de jeu
+
+
+
+  // --------------
+  //! Boucle de jeu
   function gameLoop() {
     // Effacer le canvas
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -115,6 +130,44 @@ playerScript.onload = () => {
       // Supprimer les bulles "mortes"
       if (bubbles[i].isDead()) {
         bubbles.splice(i, 1);
+      }
+    }
+
+    // Spawner des filets régulièrement
+    netSpawnTimer++;
+    if (netSpawnTimer >= netSpawnInterval) {
+      netSpawnTimer = 0;
+      
+      // Créer un filet qui vise la position actuelle du joueur
+      nets.push(
+        new Net(
+          netSprite,
+          player.x + player.width / 2,  // Position X du joueur
+          player.y + player.height / 2, // Position Y du joueur
+          150,  // Largeur du filet
+          80,  // Hauteur du filet
+          4,   // Vitesse de chute
+          30   // Latence (30 frames = 0.5 seconde) temps avant de commencer à tomber
+        )
+      );
+    }
+
+    // Mettre à jour et dessiner les filets
+    for (let i = nets.length - 1; i >= 0; i--) {
+      nets[i].update(canvas.height);
+      
+      // Vérifier collision avec le joueur
+      if (nets[i].checkCollision(player)) {
+        console.log("Touché par un filet !"); // TODO: Game over
+        nets.splice(i, 1);
+        continue;
+      }
+      
+      // Supprimer les filets hors écran
+      if (nets[i].isOffScreen(canvas.height)) {
+        nets.splice(i, 1);
+      } else {
+        nets[i].draw(ctx);
       }
     }
 

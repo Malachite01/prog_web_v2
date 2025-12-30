@@ -1,7 +1,6 @@
 # prog_web_v2
 
 TODO:
-- Ajouter un timer dans le jeu
 - Ajouter systeme de highscore
 - Ajouter les enemis et filets
 - AJouter un systeme de vies
