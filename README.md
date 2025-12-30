@@ -7,4 +7,5 @@ TODO:
 - Ajouter des sons
 - game_manager.js
 - Player.js
+- ZQSD
 - Ajouter un ecran de fin de jeu (defaite) avec bouton retry quand mort (juste un refresh de la page)

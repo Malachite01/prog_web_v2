@@ -5,14 +5,16 @@ const timerElement = document.getElementById("timer");
 function startTimer() {
     if (timer !== null) return;
     timer = setInterval(() => {
-    temps++;
-    showTimer();
+        temps++;
+        showTimer();
     }, 1000);
 }
 
-function endTimer() {
-    clearInterval(timer);
-    timer = null;
+function stopTimer() {
+    if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+    }
 }
 
 function showTimer() {
@@ -22,4 +24,13 @@ function showTimer() {
     timerElement.textContent = `${String(minutes).padStart(2, "0")}:${String(secondes).padStart(2, "0")}`;
 }
 
-startTimer()
+function getTimeInSeconds() {
+    return temps;
+}
+
+function getTime() {
+    return timerElement.textContent;
+}
+
+// Démarrer le timer au chargement du script
+startTimer();

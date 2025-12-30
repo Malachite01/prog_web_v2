@@ -31,7 +31,6 @@ class Net {
   }
   
   draw(ctx) {
-    // Dessiner le filet
     ctx.drawImage(
       this.sprite,
       this.x,
@@ -39,19 +38,6 @@ class Net {
       this.width,
       this.height
     );
-    
-    // Indicateur visuel pendant la latence
-    if (!this.isFalling && this.latencyCounter > 0) {
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath();
-      ctx.moveTo(this.x + this.width / 2, 0);
-      ctx.lineTo(this.x + this.width / 2, this.y + this.height);
-      ctx.stroke();
-      ctx.restore();
-    }
   }
   
   // Vérifier si le filet est hors de l'écran (en bas)
@@ -67,5 +53,11 @@ class Net {
       this.y < player.y + player.height &&
       this.y + this.height > player.y
     );
+  }
+
+  drawCollision(ctx) {
+    ctx.strokeStyle = 'red'; // Couleur du contour
+    ctx.lineWidth = 2;
+    ctx.strokeRect(this.x, this.y, this.width, this.height); // Dessine le contour
   }
 }

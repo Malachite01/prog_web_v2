@@ -27,6 +27,7 @@
 </head>
 
 <body>
+  <div id="gradient-game"></div>
   <!-- Musique -->
   <audio id="background-audio" src="./assets/sounds/music.mp3" loop autoplay muted></audio>
   <script src="./js/audio.js"></script>
@@ -53,9 +54,44 @@
   <img src="./assets/character/fish.gif" id="fish-player" style="display:none;">
   <img id="poisson-other" src="./assets/character/poisson-other.gif" style="display:none;">
 
+  <!-- Tableau des high scores -->
+  <p id="score">Scores</p>
+  <table id="high-scores">
+    <tbody id="high-scores-body">
+      <!-- Les scores seront insérés ici dynamiquement -->
+       <!-- test placeholder-->
+      <tr>
+        <th>1</th>
+        <td>Alice</td>
+        <td>05:30</td>
+      </tr>
+      <tr>
+        <th>2</th>
+        <td>Bob</td>
+        <td>04:45</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <img src="./assets/images/keyboard-arrow.webp" alt="controls" id="controls-image">
+
+  <!-- Écran de Game Over (caché par défaut) -->
+  <div id="game-over-screen" style="display: none;">
+    <div id="game-over-content">
+      <img src="./assets/character/fish.gif" alt="Fish" id="game-over-fish">
+      <h1 class="game-over-title">GAME OVER</h1>
+      <p class="game-over-score">Temps de survie: <span id="final-time">00:00</span></p>
+      <div class="input-container">
+        <input type="text" name="player-name" id="player-name" placeholder="Entrez votre nom" class="player-name-input">
+        <button class="primary-btn submit-btn" onclick="">✓</button>
+      </div>
+      <button class="primary-btn water-btn retry-btn" onclick="window.location.reload();">Reessayer</button>
+      <a href="./index.html"><button class="primary-btn water-btn menu-btn">Menu principal</button></a>
+    </div>
+  </div>
+
 
   <!-- Import des scripts JS -->
-  <script src="./js/Player.js"></script>
   <script src="./js/Net.js"></script>
   <script src="./js/game_manager.js"></script>
   <script src="./js/bubbles_game.js"></script>

@@ -140,6 +140,36 @@ class Player {
       this.controls[direction] = active;
     }
   }
+
+  checkCircularCollision(net) {
+    const playerCenterX = this.x + this.width / 2;
+    const playerCenterY = this.y + this.height / 2;
+    
+    const netCenterX = net.x + net.width / 2;
+    const netCenterY = net.y + net.height / 2;
+    
+    const dx = playerCenterX - netCenterX;
+    const dy = playerCenterY - netCenterY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    const radius = Math.min(this.width, this.height) / 2; // Rayon du poisson
+    const netWidth = Math.sqrt(Math.pow(net.width, 2) + Math.pow(net.height, 2)); // Diagonale du filet
+
+    return distance < radius + netWidth / 2; // Vérifie si la distance est inférieure à la somme des rayons
+  }
+
+  drawCollision(ctx) {
+    ctx.strokeStyle = 'blue'; // Couleur du contour pour le poisson
+    ctx.lineWidth = 2;
+
+    const centerX = this.x + this.width / 2;
+    const centerY = this.y + this.height / 2;
+    const radius = Math.min(this.width, this.height) / 2; // Rayon du poisson
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2); // Dessine un cercle
+    ctx.stroke(); // Applique le contour
+  }
 }
 
 // Bulles pour le boost

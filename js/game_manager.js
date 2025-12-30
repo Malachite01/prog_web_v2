@@ -1,20 +1,37 @@
-// Zone de jeu
+//!   ______________
+//!  |_CONSTANTES__|
+//? Zone de jeu
+const GodModeEnabled = 0; // Etre invincible
+const Debug = 0; // Afficher les hitbox pour le debug
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
-//Joueur
+
+//? Joueur
 const boostSprite = document.getElementById("fish-player");
 const playerSprite = document.getElementById("poisson-other");
 const bubbles = [];
-//Ennemy
+
+//? Ennemy
+const boatEnemy = document.getElementById("boat-enemy");
+// Position initiale du bateau ennemi
+let boatEnemyX = screen.width/2;
+const boatSpeed = 4; // Faire varier la vitesse avec laquelle le bateau se retrouve au dessus du joueur
+
 const netSprite = new Image();
 netSprite.src = './assets/enemy/net.webp';
 // Tableau pour stocker les filets actifs
 let nets = [];
 // Timer pour spawner les filets régulièrement
 let netSpawnTimer = 0;
-const netSpawnInterval = 120; // Spawner un filet toutes les 120 frames (2 secondes à 60fps)
+const netSpawnInterval = 60; // Spawner un filet toutes les 120 frames (2 secondes à 60fps)
+
+//? Jeu
+// Variable pour savoir si le jeu est actif
+let isGameActive = true;
 
 
+//!   __________
+//!  |_CANVAS__|
 //! Fonction pour redimensionner le canvas en fonction de la taille de la fenêtre
 function resizeCanvas() {
   // Volé de stackoverflow pour gérer les écrans
@@ -36,7 +53,8 @@ resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 
-//! Charger le script Player.js d'abord
+//!   __________
+//!  |_PLAYER__|
 const playerScript = document.createElement('script');
 playerScript.src = './js/Player.js';
 playerScript.onload = () => {
@@ -57,21 +75,20 @@ playerScript.onload = () => {
     5
   );
 
-
   // Contrôles clavier
   document.addEventListener("keydown", e => {
     switch(e.key) {
       case "ArrowLeft":
-        player.setControl('backward', true);
-        break;
-      case "ArrowRight":
-        player.setControl('forward', true);
-        break;
-      case "ArrowUp":
         player.setControl('left', true);
         break;
-      case "ArrowDown":
+      case "ArrowRight":
         player.setControl('right', true);
+        break;
+      case "ArrowUp":
+        player.setControl('forward', true);
+        break;
+      case "ArrowDown":
+        player.setControl('backward', true);
         break;
       case "Shift":
         player.setControl('boost', true);
@@ -82,16 +99,16 @@ playerScript.onload = () => {
   document.addEventListener("keyup", e => {
     switch(e.key) {
       case "ArrowLeft":
-        player.setControl('backward', false);
-        break;
-      case "ArrowRight":
-        player.setControl('forward', false);
-        break;
-      case "ArrowUp":
         player.setControl('left', false);
         break;
-      case "ArrowDown":
+      case "ArrowRight":
         player.setControl('right', false);
+        break;
+      case "ArrowUp":
+        player.setControl('forward', false);
+        break;
+      case "ArrowDown":
+        player.setControl('backward', false);
         break;
       case "Shift":
         player.setControl('boost', false);
@@ -100,21 +117,34 @@ playerScript.onload = () => {
   });
 
 
+  //!   _____________
+  //!  |_GAME OVER__|
+  // Fonction pour afficher le game over si collision
+  function showGameOver() {
+      isGameActive = false;
+
+      // Stop le timer et récupère le temps final
+      stopTimer();
+      const finalTime = getTime();
+
+      // Afficher le temps final dans l'écran de game over
+      document.getElementById('final-time').textContent = finalTime;
+      document.getElementById('game-over-screen').style.display = 'flex';
+  }
 
 
-  // --------------
-  //! Boucle de jeu
+  //!   _____________
+  //!  |_GAME LOOP__|
   function gameLoop() {
     // Effacer le canvas
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-    
     // Mettre à jour le joueur
     player.update(canvas.clientWidth, canvas.clientHeight);
     
-    // Générer des bulles uniquement pendant le boost
+
+    //? Générer des bulles uniquement pendant le boost
     if (player.controls.boost) {
       const nose = player.getNosePosition();
-
       bubbles.push(
         new Bubble(
           nose.x - Math.cos(player.angle) * player.width,
@@ -133,19 +163,21 @@ playerScript.onload = () => {
       }
     }
 
-    // Spawner des filets régulièrement
+    //? Spawner des filets régulièrement
     netSpawnTimer++;
     if (netSpawnTimer >= netSpawnInterval) {
       netSpawnTimer = 0;
+      // Décaler le filet de façon aléatoire autour du joueur (X uniquement)
+      const randomOffsetX = (Math.random() - 0.5) * 200; // -100 à +100 pixels
       
       // Créer un filet qui vise la position actuelle du joueur
       nets.push(
         new Net(
           netSprite,
-          player.x + player.width / 2,  // Position X du joueur
+          player.x + player.width / 2 + randomOffsetX,  // Position X du joueur
           player.y + player.height / 2, // Position Y du joueur
-          150,  // Largeur du filet
-          80,  // Hauteur du filet
+          130,  // Largeur du filet
+          60,  // Hauteur du filet
           4,   // Vitesse de chute
           30   // Latence (30 frames = 0.5 seconde) temps avant de commencer à tomber
         )
@@ -156,13 +188,19 @@ playerScript.onload = () => {
     for (let i = nets.length - 1; i >= 0; i--) {
       nets[i].update(canvas.height);
       
-      // Vérifier collision avec le joueur
-      if (nets[i].checkCollision(player)) {
-        console.log("Touché par un filet !"); // TODO: Game over
-        nets.splice(i, 1);
-        continue;
+      // Dessiner les hitbox pour le debug
+      if(Debug) {
+        player.drawCollision(ctx);
+        nets[i].drawCollision(ctx);
       }
-      
+      // Vérifier collision avec le joueur
+      if (isGameActive && nets[i].checkCollision(player) && player.checkCircularCollision(nets[i])) {
+          if (!GodModeEnabled) {
+              showGameOver(); // Afficher le game over
+          }
+          nets.splice(i, 1);
+          continue;
+      }
       // Supprimer les filets hors écran
       if (nets[i].isOffScreen(canvas.height)) {
         nets.splice(i, 1);
@@ -174,10 +212,20 @@ playerScript.onload = () => {
     // Dessiner le joueur
     player.draw(ctx);
     
-    //! TODO: Ajouter la logique du bateau ennemi ici
-    
-    // Continuer la boucle
-    requestAnimationFrame(gameLoop);
+    // Bouger le bateau par rapport au joueur 
+    // Centrer le bateau sur la position X du joueur (on cherche le milieu du joueur)
+    const rect = canvas.getBoundingClientRect();
+    const playerCenterX = player.x + player.width / 2;
+    const targetX = rect.left + playerCenterX - boatEnemy.offsetWidth / 2;
+    const dx = targetX - boatEnemyX;
+    boatEnemyX += Math.sign(dx) * Math.min(Math.abs(dx), boatSpeed);
+    boatEnemy.style.left = boatEnemyX + "px";
+
+
+    // Continuer la boucle de jeu si actif
+    if (isGameActive) {
+      requestAnimationFrame(gameLoop);
+    }
   }
 
   // Démarrer le jeu
