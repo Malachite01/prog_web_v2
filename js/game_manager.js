@@ -23,7 +23,6 @@ netSprite.src = './assets/enemy/net.webp';
 let nets = [];
 // Timer pour spawner les filets régulièrement
 let netSpawnTimer = 0;
-const netSpawnInterval = 60; // Spawner un filet toutes les 120 frames (2 secondes à 60fps)
 
 //? Jeu
 // Variable pour savoir si le jeu est actif
@@ -180,23 +179,30 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Filets ennemis
+    //? Détection mobile pour ajuster la difficulté
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+    // Paramètres adaptés au mobile
+    const netSpawnInterval = isMobile ? 120 : 60; // 2 secondes mobile vs 1 secondes PC
+    const netWidth = isMobile ? 100 : 130; // Filets plus petits sur mobile
+    const netHeight = isMobile ? 45 : 60;
+    const netSpeed = isMobile ? 2.5 : 3; // Tombent un peu plus lentement
+    const netLatency = 60; // Plus de temps de réaction
+
     //? Spawner des filets régulièrement
     netSpawnTimer++;
     if (netSpawnTimer >= netSpawnInterval) {
       netSpawnTimer = 0;
-      // Décaler le filet de façon aléatoire autour du joueur (X uniquement)
-      const randomOffsetX = (Math.random() - 0.5) * 200; // -100 à +100 pixels
-      
-      // Créer un filet qui vise la position actuelle du joueur
+      const randomOffsetX = (Math.random() - 0.5) * 200;
       nets.push(
         new Net(
           netSprite,
-          player.x + player.width / 2 + randomOffsetX,  // Position X du joueur
-          player.y + player.height / 2, // Position Y du joueur
-          130,  // Largeur du filet
-          60,  // Hauteur du filet
-          3,   // Vitesse de chute
-          60   // Latence (30 frames = 0.5 seconde) temps avant de commencer à tomber
+          player.x + player.width / 2 + randomOffsetX,
+          player.y + player.height / 2,
+          netWidth,
+          netHeight,
+          netSpeed,
+          netLatency
         )
       );
     }
