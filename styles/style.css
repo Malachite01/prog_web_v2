@@ -50,6 +50,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: -45vh;
 }
 
 @keyframes zoomInOut {

@@ -57,6 +57,31 @@ window.addEventListener("resize", resizeCanvas);
 
 // Attendre que tous les scripts soient chargés
 window.addEventListener('DOMContentLoaded', () => {
+  // Fonction pour vérifier si toutes les images sont chargées
+  function waitForImages() {
+    return Promise.all([
+      new Promise((resolve) => {
+        if (playerSprite.complete) resolve();
+        else playerSprite.onload = resolve;
+      }),
+      new Promise((resolve) => {
+        if (boostSprite.complete) resolve();
+        else boostSprite.onload = resolve;
+      }),
+      new Promise((resolve) => {
+        if (netSprite.complete) resolve();
+        else netSprite.onload = resolve;
+      }),
+      new Promise((resolve) => {
+        if (boatEnemy.complete) resolve();
+        else boatEnemy.onload = resolve;
+      })
+    ]);
+  }
+
+  // Démarrer le jeu uniquement quand toutes les images sont prêtes
+  waitForImages().then(() => {
+
   // échelle du poisson
   const scale = 0.13;
 
@@ -253,4 +278,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Démarrer le jeu
   gameLoop();
-});
+});});
