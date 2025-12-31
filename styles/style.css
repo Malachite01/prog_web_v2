@@ -605,3 +605,11 @@ body {
     display: block;
   }
 }
+
+/* Zone de jeu uniquement */
+#game-canvas,
+#mobile-controls,
+#joystick-container {
+  touch-action: none;
+  overscroll-behavior: none;
+}
