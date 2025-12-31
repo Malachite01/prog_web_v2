@@ -1,4 +1,3 @@
-
 // Contrôles mobiles
 function initMobileControls(player) {
   // Détecter si l'appareil est mobile
@@ -11,6 +10,7 @@ function initMobileControls(player) {
   document.addEventListener('gesturestart', e => e.preventDefault());
   document.addEventListener('gesturechange', e => e.preventDefault());
   document.addEventListener('gestureend', e => e.preventDefault());
+
   let lastTouchEnd = 0;
   document.addEventListener('touchend', e => {
     const now = Date.now();
@@ -58,9 +58,9 @@ function initMobileControls(player) {
     // Normaliser les axes
     const normalizedX = deltaX / distance; // -1 à 1
     const normalizedY = deltaY / distance; // -1 à 1
-    const threshold = 0.3;
+    const threshold = 0.1; // seuil plus bas pour diagonales
 
-    // Axe X Forward / Backward
+    // Axe X → Forward / Backward
     if (normalizedX > threshold) {
       player.setControl('forward', true);
       player.setControl('backward', false);
@@ -72,7 +72,7 @@ function initMobileControls(player) {
       player.setControl('backward', false);
     }
 
-    // Axe Y Pitch Up / Down (inversé pour que haut = pitchUp)
+    // Axe Y → Pitch Up / Down (inversé pour que haut = pitchUp)
     const invertedY = -normalizedY;
     if (invertedY > threshold) {
       player.setControl('pitchUp', true);
@@ -88,24 +88,25 @@ function initMobileControls(player) {
 
   // Événements tactiles pour le joystick
   joystickContainer.addEventListener('touchstart', e => {
-    e.preventDefault();
     joystickActive = true;
 
     const rect = joystickContainer.getBoundingClientRect();
     joystickCenter.x = rect.left + rect.width / 2;
     joystickCenter.y = rect.top + rect.height / 2;
-  });
+
+    e.preventDefault(); // Bloque seulement zoom sur joystick
+  }, { passive: false });
 
   joystickContainer.addEventListener('touchmove', e => {
-    e.preventDefault();
     if (!joystickActive) return;
 
     const touch = e.touches[0];
     updateJoystick(touch.clientX, touch.clientY);
-  });
+
+    e.preventDefault(); // Bloque zoom pendant mouvement sur joystick
+  }, { passive: false });
 
   joystickContainer.addEventListener('touchend', e => {
-    e.preventDefault();
     joystickActive = false;
 
     // Réinitialiser tous les contrôles
@@ -116,18 +117,20 @@ function initMobileControls(player) {
 
     // Remettre le stick au centre
     joystickStick.style.transform = 'translate(-50%, -50%)';
-  });
+
+    e.preventDefault(); // Bloque zoom sur fin touch joystick
+  }, { passive: false });
 
   // Bouton boost
   boostBtn.addEventListener('touchstart', e => {
-    e.preventDefault();
     player.setControl('boost', true);
-  });
+    e.preventDefault(); // bloque zoom uniquement sur boost
+  }, { passive: false });
 
   boostBtn.addEventListener('touchend', e => {
-    e.preventDefault();
     player.setControl('boost', false);
-  });
+    e.preventDefault(); // bloque zoom uniquement sur boost
+  }, { passive: false });
 
   console.log('Contrôles mobiles initialisés');
 }
