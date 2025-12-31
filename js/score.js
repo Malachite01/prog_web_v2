@@ -55,7 +55,7 @@ function displayHighScores() {
 
   // Réinitialiser le contenu de la table : Nom des colonnes des tableaux
   inGameHighScoresTable.innerHTML = '<thead><tr><th>🏆</th><th>Pseudo</th><th>Temps</th></tr></thead><tbody></tbody>';
-  gameOverGameHighScoresTable.innerHTML = '<thead><tr><th>Classement</th><th>Patronyme</th><th>Temps</th></tr></thead><tbody></tbody>';
+  gameOverGameHighScoresTable.innerHTML = '<thead><tr><th>Classement</th><th>Pseudo</th><th>Temps</th></tr></thead><tbody></tbody>';
 
   function getRankLabel(index) {
     if (index === 0) return "🥇";
