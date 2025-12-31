@@ -55,9 +55,9 @@ window.addEventListener("resize", resizeCanvas);
 
 //!   __________
 //!  |_PLAYER__|
-const playerScript = document.createElement('script');
-playerScript.src = './js/Player.js';
-playerScript.onload = () => {
+
+// Attendre que tous les scripts soient chargés
+window.addEventListener('DOMContentLoaded', () => {
   // échelle du poisson
   const scale = 0.13;
 
@@ -116,6 +116,11 @@ playerScript.onload = () => {
     }
   });
 
+  // Contrôles pour téléphone
+  if (typeof initMobileControls === 'function') {
+    initMobileControls(player);
+  }
+
 
   //!   _____________
   //!  |_GAME OVER__|
@@ -127,9 +132,21 @@ playerScript.onload = () => {
       stopTimer();
       const finalTime = getTime();
 
+      
+      // Rajouter le message de félicitation si on fait notre meilleur temps:
+      const currentSeconds = getTimeInSeconds();
+      const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+      const bestSeconds = highScores.length ? highScores[0].score.seconds : -1; // top actuel (tri décroissant)
+      const isNewRecord = currentSeconds > bestSeconds;
+
+      const msg = document.getElementById('new-record-msg');
+      if (msg) msg.style.display = isNewRecord ? 'block' : 'none';
+
       // Afficher le temps final dans l'écran de game over
       document.getElementById('final-time').textContent = finalTime;
-      document.getElementById('game-over-screen').style.display = 'flex';
+      document.getElementById('game-over-screen').style.display = 'flex'; // Afficher et centrer Game Over
+      document.getElementById('game-over-input').style.display = 'block'; // Afficher Game Over étape 1
+      document.getElementById('game-over-scores').style.display = 'none'; // S'assurer que Game Over étape 2 est cachée
   }
 
 
@@ -178,8 +195,8 @@ playerScript.onload = () => {
           player.y + player.height / 2, // Position Y du joueur
           130,  // Largeur du filet
           60,  // Hauteur du filet
-          4,   // Vitesse de chute
-          30   // Latence (30 frames = 0.5 seconde) temps avant de commencer à tomber
+          3,   // Vitesse de chute
+          60   // Latence (30 frames = 0.5 seconde) temps avant de commencer à tomber
         )
       );
     }
@@ -230,6 +247,4 @@ playerScript.onload = () => {
 
   // Démarrer le jeu
   gameLoop();
-};
-
-document.head.appendChild(playerScript);
+});
