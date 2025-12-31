@@ -402,6 +402,47 @@ body {
   background: transparent;
 }
 
+/* Responsive mobile pour le tableau de scores */
+@media screen and (max-width: 768px) {
+  #game-over-high-scores {
+    width: 95vw;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    max-height: 40vh;
+  }
+
+  #game-over-high-scores tbody {
+    max-height: 300px;
+  }
+
+  #game-over-high-scores th,
+  #game-over-high-scores td {
+    padding: 8px 5px;
+    font-size: 1rem;
+  }
+
+  .game-over-title {
+    font-size: 2.5rem;
+  }
+
+  .retry-btn,
+  .menu-btn {
+    min-width: 140px;
+    font-size: 1rem;
+    padding: 10px 15px;
+  }
+
+  /* Boutons en colonne sur mobile */
+  #game-over-scores .game-over-content > div {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #game-over-scores .game-over-content > div button {
+    width: 100%;
+    max-width: 250px;
+  }
+}
 
 @keyframes pulse {
   0%, 100% {
@@ -414,11 +455,6 @@ body {
   }
 }
 
-.retry-btn,
-.menu-btn {
-  margin: 5px;
-  min-width: 200px;
-}
 
 .input-container {
   display: flex;
