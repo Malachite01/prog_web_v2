@@ -5,7 +5,7 @@
 
     const mode = bubbleContainer.dataset.bubbleMode || "index";
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    const isLowPerformance = window.innerWidth < 600;
+    const isLowPerformance = window.innerWidth < 768;
 
     const configs = {
         index: {

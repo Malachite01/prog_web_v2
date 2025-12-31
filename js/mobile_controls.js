@@ -25,10 +25,10 @@ function initMobileControls(player) {
     
     if (distance < deadZone) {
       // Zone morte : pas de mouvement
-      player.setControl('left', false);
-      player.setControl('right', false);
       player.setControl('forward', false);
       player.setControl('backward', false);
+      player.setControl('pitchUp', false);
+      player.setControl('pitchDown', false);
       
       joystickStick.style.transform = 'translate(-50%, -50%)';
       return;
@@ -47,28 +47,28 @@ function initMobileControls(player) {
     const normalizedX = deltaX / distance;
     const normalizedY = deltaY / distance;
     
-    // Rotation (gauche/droite)
-    if (normalizedX < -0.3) {
-      player.setControl('left', true);
-      player.setControl('right', false);
-    } else if (normalizedX > 0.3) {
-      player.setControl('right', true);
-      player.setControl('left', false);
-    } else {
-      player.setControl('left', false);
-      player.setControl('right', false);
-    }
-    
-    // Avancer/reculer
-    if (normalizedY < -0.3) {
+    // Avancer / Reculer avec l’axe X
+    if (normalizedX > 0.3) {
       player.setControl('forward', true);
       player.setControl('backward', false);
-    } else if (normalizedY > 0.3) {
+    } else if (normalizedX < -0.3) {
       player.setControl('backward', true);
       player.setControl('forward', false);
     } else {
       player.setControl('forward', false);
       player.setControl('backward', false);
+    }
+
+    // Pitch avec l’axe Y
+    if (normalizedY < -0.3) {
+      player.setControl('pitchUp', true);
+      player.setControl('pitchDown', false);
+    } else if (normalizedY > 0.3) {
+      player.setControl('pitchDown', true);
+      player.setControl('pitchUp', false);
+    } else {
+      player.setControl('pitchUp', false);
+      player.setControl('pitchDown', false);
     }
   }
   
@@ -95,10 +95,10 @@ function initMobileControls(player) {
     joystickActive = false;
     
     // Réinitialiser tous les contrôles
-    player.setControl('left', false);
-    player.setControl('right', false);
     player.setControl('forward', false);
     player.setControl('backward', false);
+    player.setControl('pitchUp', false);
+    player.setControl('pitchDown', false);
     
     // Remettre le stick au centre
     joystickStick.style.transform = 'translate(-50%, -50%)';
