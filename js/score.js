@@ -4,7 +4,7 @@ function addScore(event) {
   event.preventDefault();
 
   // Création d'un objet String pour le nom d'utilisateur sans les espaces
-  const playerName = document.getElementById('player-name').value.trim();
+  const playerName =  new String(document.getElementById('player-name').value.trim());
 
   const score = {
     minSeconds: getTime(), // utile pour l'affichage 
